@@ -25,8 +25,14 @@ namespace PRS_Capstone {
 
             services.AddControllers();
 
+            var connStrKey = "PrsDbContextWinhost";
+
+#if DEBUG
+            connStrKey = "PrsDbContext";    //lines 30-32 is the manually written code to run when I am running program in debug mode. This says to run the local
+#endif                                      //DB vs. the cloud/production one with Winhost at end. When I runn it un "release mode", it'll gray out.
+
             services.AddDbContext<PRSDbContext>(x => {
-                x.UseSqlServer(Configuration.GetConnectionString("PRSDbContext"));  
+                x.UseSqlServer(Configuration.GetConnectionString(connStrKey));  
             });
             services.AddCors();
         }
@@ -48,6 +54,12 @@ namespace PRS_Capstone {
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
             });
+
+            using (var scope = app.ApplicationServices.GetRequiredService < IServiceScopeFactory >().CreateScope()) 
+                scope.ServiceProvider.GetService<PRSDbContext>().Database.Migrate();
+            }
+
+
+
         }
     }
-}

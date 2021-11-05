@@ -41,7 +41,7 @@ namespace PRS_Capstone.Controllers
         }
 
             //GET: api/Users/Username/Password
-            [HttpGet("Login / {cjohnson} / {baddiedeveloper}")]
+            [HttpGet("Login / {username} / {password}")]
 
             public async Task<ActionResult<User>>Login(string Username, string Password) 
             
